@@ -1,0 +1,32 @@
+﻿@page
+@model IndexModel
+@inject SignInManager<User> SignInManager
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<br />
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-xs-offset-2 col-sm-8 col-sm-offset-3 col-md-6 col-md-offset-4">
+            @await Html.PartialAsync("_CardPartial", Model.Cards.inventories)
+            @await Html.PartialAsync("_CardPartial", Model.Cards.users)
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-offset-2 col-sm-8 col-sm-offset-3 col-md-6 col-md-offset-4">
+            @await Html.PartialAsync("_CardPartial", Model.Cards.products)
+            @await Html.PartialAsync("_CardPartial", Model.Cards.categories)
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-offset-2 col-sm-8 col-sm-offset-3 col-md-6 col-md-offset-4">
+            @await Html.PartialAsync("_CardPartial", Model.Cards.styles)
+            @await Html.PartialAsync("_CardPartial", Model.Cards.locations)
+        </div>
+    </div> 
+    
+}
+
+   

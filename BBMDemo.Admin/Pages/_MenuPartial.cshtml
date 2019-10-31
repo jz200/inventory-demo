@@ -1,0 +1,8 @@
+﻿@inject SignInManager<User> SignInManger
+@if (SignInManger.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <ul class="nav navbar-nav">
+        <li><a asp-page="/Index">Dashboard</a></li>
+    </ul>
+}
+

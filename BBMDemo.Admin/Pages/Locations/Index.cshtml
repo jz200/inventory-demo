@@ -1,0 +1,66 @@
+﻿@page
+@model IndexModel
+@inject  SignInManager<User> SignInManager
+@{
+    ViewData["Title"] = "Locations";
+}
+@if  (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h2>@ViewData["Title"]</h2>
+            <status-message message="@Model.StatusMessage"></status-message>
+            <page-button path="Locations/Create" bootstrap-style="primary" 
+                description="Create New"></page-button>
+            <page-button path="Index" bootstrap-style="warning" 
+                glyph="list-alt"description="Dashboard"></page-button>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Location Name</th>
+                        <th># of Inventory Entries</th>
+                        <th>Quantity in Inventory</th>
+                        <th>Date Created</th>
+                        <th>Date Modified</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.items)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(m => item.Name)</td>
+                            <td><a href="~/ProductInventories?LocationId=@item.LocationId">@item.ProductInventory.Count</a></td>
+                            <td>
+                                <a href="~/ProductInventories?styleId=@item.LocationId">
+                                    @item.ProductInventory.Sum(pi => pi.Quantity)
+                                </a>
+                            </td>
+                            <td>@item.EnteredDate.ToShortDateString()</td>
+                            <td>@item.ModifiedDate</td>
+                            <td class="button-col-width">
+                                <page-button path="Locations/Edit" glyph="pencil"
+                                             bootstrap-style="success" id="@item.LocationId">
+                                </page-button>
+                                <page-button path="Locations/Delete" glyph="remove"
+                                             bootstrap-style="danger" id="@item.LocationId">
+                                </page-button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+        
+                <tfoot>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><strong>@Model.items.Sum(p => p.ProductInventory.Sum(pi => pi.Quantity))</strong></td>
+                        <td colspan="3"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+}
+
+
+

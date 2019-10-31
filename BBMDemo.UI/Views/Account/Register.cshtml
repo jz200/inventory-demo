@@ -1,0 +1,55 @@
+﻿@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="row">
+    <div class="col-md-4 col-md-offset-4">
+        <h4 id="register-panel-heading">Create a new account.</h4>
+        <div class="panel register-panel">
+            <div class="panel-body register-panel-body">
+                <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" class="register-form">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-group">
+                        <div class="icon-addon">
+                            <input asp-for="Email" class="form-control" placeholder="Email" />
+                            <label for="Email" class="glyphicon glyphicon-envelope"></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="icon-addon">
+                            <input asp-for="FirstName" class="form-control" placeholder="First Name" />
+                            <label for="FirstName" class="glyphicon glyphicon-envelope"></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="icon-addon">
+                            <input asp-for="LastName" class="form-control" placeholder="Last Name" />
+                            <label for="LastName" class="glyphicon glyphicon-envelope"></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="icon-addon">
+                            <input asp-for="Password" class="form-control" placeholder="Password" />
+                            <label for="Password" class="glyphicon glyphicon-lock"></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="icon-addon">
+                            <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm Password" />
+                            <label for="ConfirmPassword" class="glyphicon glyphicon-lock"></label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary register-form-submit">Register</button>
+                </form>
+            </div>
+        </div>
+        <p>
+            Already have an account? <a asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]">Log in</a>
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

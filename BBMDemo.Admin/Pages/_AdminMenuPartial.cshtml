@@ -1,0 +1,22 @@
+﻿@inject SignInManager<User> SignInManager
+
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <ul class="nav navbar-nav">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" 
+               aria-expanded="false">  
+            Admin
+            <span class="caret text-light hidden-xs"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a asp-page="/ProductInventories/Index">Inventory Entries</a></li>
+                <li><a asp-page="/Users/Index">Users</a></li>
+                <li><a href="~/Products/Index">Products</a></li>
+                <li><a asp-page="/Categories/Index">Categories</a></li>
+                <li><a href="/Styles/Index">Styles</a></li>
+                <li><a asp-page="/Locations/Index">Locations</a></li>
+            </ul>
+        </li>
+    </ul>
+}

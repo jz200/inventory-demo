@@ -1,0 +1,117 @@
+﻿@page
+@model IndexModel
+@inject  SignInManager<User> SignInManager
+@{
+    ViewData["Title"] = "Product Inventories";
+}
+@if  (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <div class="row" id="top">
+        <div class="col-md-10 col-md-offset-1">
+            <h2>@ViewData["Title"]</h2>
+            <status-message message="@Model.StatusMessage"></status-message>
+            <page-button path="ProductInventories/Create" bootstrap-style="primary"
+                         description="Create New"></page-button>
+            <page-button path="Index" bootstrap-style="warning"
+                         glyph="list-alt" description="Dashboard"></page-button>
+            <span class="text-info">&nbsp;&nbsp;&nbsp;# of records found for the selected criteria: @Model.items.Count()</span>
+            &nbsp;&nbsp;&nbsp;<a class="btn btn-sm" href="#bottom">View Total in Stock</a>
+            <p></p>
+            <div class="row">
+                <form>
+                    <div class="col-md-3">
+                        <select class="form-control" asp-items="ViewBag.Categories" asp-for="CatId">
+                            <option value="">Category</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-control" asp-items="ViewBag.Styles" asp-for="StyleId">
+                            <option value="">Style</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-control" asp-items="ViewBag.Locations" asp-for="LocationId">
+                            <option value="">Location</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input placeholder="Item Number" type="text" asp-for="ItemNumber" class="form-control" />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <p></p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Item Number</th>
+                        <th>Style</th>
+                        <th>Location</th>
+                        <th>Quantity</th>
+                        <th>Frame</th>
+                        <th>Body</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                @if (Model.items.Count() == 0)
+                {
+                    <tr>
+                        <td colspan="8" class="text-danger">
+                            <strong>
+                                ! There are no results that satisfy your search criteria.
+                                Please try with different criteria.
+                            </strong>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tbody>
+                        @foreach (var item in Model.items)
+                        {
+                            <tr>
+                                <td>@Model.productList.Where(p => p.ProductId == item.ProductId).FirstOrDefault().Category.Name</td>
+                                <td><a href="/Products/Detail?id=@item.ProductId">@item.Product.ItemNumber</a></td>
+                                <td><a href="/ProductInventories/Index?styleId=@item.StyleId">@Html.DisplayFor(m => item.Style.Name)</a></td>
+                                <td><a href="/ProductInventories/Index?locationId=@item.LocationId">@Html.DisplayFor(m => item.Location.Name)</a></td>
+                                <td>@Html.DisplayFor(m => item.Quantity)</td>
+                                <td>@Html.DisplayFor(m => item.FrameQuantity)</td>
+                                <td>@Html.DisplayFor(m => item.BodyQuantity)</td>
+                                <td class="button-col-width">
+                                    <page-button path="ProductInventories/Edit" glyph="pencil"
+                                                 bootstrap-style="success" id-productId="@item.ProductId"
+                                                 id-styleId="@item.StyleId" id-locationId="@item.LocationId">
+                                    </page-button>
+                                    <page-button path="ProductInventories/Delete" glyph="remove"
+                                                 bootstrap-style="danger" id-productId="@item.ProductId"
+                                                 id-styleId="@item.StyleId" id-locationId="@item.LocationId">
+                                    </page-button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr id="bottom">
+                            <td><a href="#top">Go to Top</a></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>@Model.items.Sum(pi => pi.Quantity)</strong></td>
+                            <td><strong>@Model.items.Sum(pi => pi.FrameQuantity)</strong></td>
+                            <td><strong>@Model.items.Sum(pi => pi.BodyQuantity)</strong></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                }
+            </table>
+        </div>
+    </div>
+}
+
+
+

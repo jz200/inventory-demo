@@ -1,0 +1,109 @@
+﻿@model ProductInventory
+@inject SignInManager<User> SignInManager
+@{ 
+    ViewData["Title"] = "Create a new inventory entry";
+}
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h2>@ViewData["Title"]</h2>
+            <page-button path="ProductInventories/Index" bootstrap-style="primary" glyph="info-sign"
+                         description="Back to List"></page-button>
+            <p></p>
+            <form method="post">
+                @if (ViewData.ModelState.ContainsKey("DuplicateKey"))
+                { <div class="text-danger">
+                        @Html.Raw(ViewBag.ErrorMsg)
+                    </div>
+                    <p></p>
+                    //This would work too
+                  // @ViewBag.htmlStringError
+                }
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label  class="control-label">Category</label>
+                    <select id="CategoryList" name="Categories"  asp-items="ViewBag.Categories"
+                            class="form-control">
+                        <option value="-1">Select</option>
+                    </select>                   
+                </div>
+                <div class="form-group">
+                    <label asp-for="ProductId" class="control-label"></label>
+                    <span class="text-info">(You can select a category to narror down item lists)</span>
+                    <select id="ProductList" asp-for="ProductId" asp-items="ViewBag.Products"
+                            class="form-control">
+                        <option value="">Select</option>
+                    </select>
+                    <span asp-validation-for="ProductId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="StyleId" class="control-label"></label>
+                    <select asp-for="StyleId" asp-items="ViewBag.Styles"
+                            class="form-control">
+                        <option value="">Select</option>
+                    </select>
+                    <span asp-validation-for="StyleId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LocationId" class="control-label"></label>
+                    <select asp-for="LocationId" asp-items="ViewBag.Locations"
+                            class="form-control">
+                        <option value="">Select</option>
+                    </select>
+                    <span asp-validation-for="LocationId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Quantity" class="control-label"></label>
+                    <input asp-for="Quantity" class="form-control" />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FrameQuantity" class="control-label"></label>
+                    <input asp-for="FrameQuantity" class="form-control" />
+                    <span asp-validation-for="FrameQuantity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="BodyQuantity" class="control-label"></label>
+                    <input asp-for="BodyQuantity" class="form-control" />
+                    <span asp-validation-for="BodyQuantity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="hidden" value="@DateTime.Now" asp-for="EnteredDate" />
+                </div>
+                <div class="form-group">
+                    <input type="hidden" value="@DateTime.Now" asp-for="ModifiedDate" />
+                </div>
+                <button type="submit" class="btn btn-success">Create</button>
+
+            </form>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var productDDL = $('#ProductList');
+
+            $("#CategoryList").change(function () {
+                $.ajax({
+                    url: "/ProductInventories/Products",
+                    method: 'post',
+                    data: { catId: $(this).val() },
+                    dataType: 'json',
+                    success: function (data) {
+                        productDDL.empty();
+                        productDDL.append($('<option/>', { value: '', text: 'Select' }));
+                        $(data).each(function (index, item) {
+                            productDDL.append($('<option/>', { value: item.productId, text: item.itemNumber }));
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+

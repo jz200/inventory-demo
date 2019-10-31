@@ -1,0 +1,57 @@
+﻿@page
+@model IndexModel
+@inject  SignInManager<User> SignInManager
+@{
+    ViewData["Title"] = "Categories";
+    
+}
+@if  (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h2>@ViewData["Title"]</h2>
+            <status-message message="@Model.StatusMessage"></status-message>
+            <page-button path="Categories/Create" bootstrap-style="primary" 
+                description="Create New"></page-button>
+            <page-button path="Index" bootstrap-style="warning" 
+                glyph="list-alt"description="Dashboard"></page-button>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Category Name</th>
+                        <th># of Products</th>
+                        <th>Quantity in Stock</th>
+                        <th>Date Created</th>
+                        <th>Date Modified</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.items)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(m => item.Name)</td>
+                            <td><a href="~/Products?catId=@item.CategoryId">@item.Product.Count</a></td>
+                            <td><a href="/ProductInventories/catId=@item.CategoryId">
+                            @Model.inventories.Count(pi => item.Product.Select(p => p.ProductId).Contains(pi.ProductId))</a>
+                            </td>
+                            <td>@item.EnteredDate.ToShortDateString()</td>
+                            <td>@item.ModifiedDate</td>
+                            <td class="button-col-width">
+                                <page-button path="Categories/Edit" glyph="pencil"
+                                bootstrap-style="success" id="@item.CategoryId">
+                                </page-button>
+                                <page-button path="Categories/Delete" glyph="remove"
+                                bootstrap-style="danger" id="@item.CategoryId">
+                                </page-button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+
+

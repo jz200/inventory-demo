@@ -1,0 +1,76 @@
+﻿@model ProductInventory
+@inject SignInManager<User> SignInManager
+@{
+    ViewData["Title"] = "Edit inventory entry";
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h2>@ViewData["Title"]</h2>
+            <page-button path="ProductInventories/Index" bootstrap-style="primary" glyph="info-sign"
+                         description="Back to List"></page-button>
+            <page-button path="ProductInventories/Delete" bootstrap-style="danger" glyph="remove"
+                         description="Delete" id-productId="@Model.ProductId"
+                         id-styleId="@Model.StyleId" id-locationId="@Model.LocationId"></page-button>
+            <p></p>
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label class="control-label">Category</label>
+                    <select class="form-control" disabled>
+                        <option value="">@ViewBag.Category</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ProductId" class="control-label"></label>
+                    <select class="form-control" disabled>
+                        <option value="@Model.ProductId">@Model.Product?.ItemNumber</option>
+                    </select>
+                    <input type="hidden" asp-for="ProductId" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="StyleId" class="control-label"></label>
+                    <select class="form-control" disabled>
+                        <option value="@Model.StyleId">@Model.Style?.Name</option>
+                    </select>
+                    <input type="hidden" asp-for="StyleId" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="LocationId" class="control-label"></label>
+                    <select class="form-control" disabled>
+                        <option value="@Model.LocationId">@Model.Location?.Name</option>
+                    </select>
+                    <input type="hidden" asp-for="LocationId" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Quantity" class="control-label"></label>
+                    <input asp-for="Quantity" class="form-control" />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FrameQuantity" class="control-label"></label>
+                    <input asp-for="FrameQuantity" class="form-control" />
+                    <span asp-validation-for="FrameQuantity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="BodyQuantity" class="control-label"></label>
+                    <input asp-for="BodyQuantity" class="form-control" />
+                    <span asp-validation-for="BodyQuantity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="hidden" asp-for="EnteredDate" />
+                </div>
+                <div class="form-group">
+                    <input type="hidden" value="@DateTime.Now" asp-for="ModifiedDate" />
+                </div>
+                <button type="submit" class="btn btn-success">Save</button>
+            </form>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

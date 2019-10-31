@@ -1,0 +1,110 @@
+﻿@page
+@model IndexModel
+@inject SignInManager<User> SignInManager
+@{
+    ViewData["Title"] = "Products";
+}
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <h2>@ViewData["Title"]</h2>
+            <status-message message="@Model.StatusMessage"></status-message>
+            <page-button path="Products/Create" bootstrap-style="primary"
+                         description="Create New"></page-button>
+            <page-button path="Index" bootstrap-style="warning"
+                         glyph="list-alt" description="Dashboard"></page-button>
+            <span class="text-info">&nbsp;&nbsp;&nbsp;# of records found for the selected criteria: @Model.items.Count()</span>
+            <p></p>
+            <div class="row">
+                <form>
+                    <div class="col-md-3">
+                        <select class="form-control" asp-items="ViewBag.Categories" asp-for="CatId"
+                                data-toggle="tooltip" title="Search by Category" >
+                            <option value="">Category</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input placeholder="Item Number" type="text" asp-for="ItemNumber" 
+                               class="form-control" data-toggle="tooltip" title="Search by item number" />
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-success">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <p></p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Item Number</th>
+                        <th># of Inventory Entries</th>
+                        <th>Quantity in Inventory</th>
+                        <th>Date Created</th>
+                        <th>Date Modified</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                @if (Model.items.Count() == 0)
+                {
+                    <tr>
+                        <td colspan="6" class="text-danger">
+                            <strong>
+                                ! There are no results that satisfy the selected criteria.
+                                Please try with different criteria.
+                            </strong>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tbody>
+                        @foreach (var item in Model.items)
+                        {
+                            <tr>
+                                <td><a href="/Products/Index?catId=@item.CategoryId">@Html.DisplayFor(m => item.Category.Name)</a></td>
+                                <td><a href="/Products/Detail?id=@item.ProductId">@Html.DisplayFor(m => item.ItemNumber)</a></td>
+                                <td><a href="/ProductInventories/Index?itemNumber=@item.ItemNumber">@item.ProductInventory.Count</a></td>
+                                <td><a href="/ProductInventories/Index?itemNumber=@item.ItemNumber">@item.ProductInventory.Sum(pi => pi.Quantity)</a></td>
+                                <td>@item.EnteredDate.ToShortDateString()</td>
+                                <td>@item.ModifiedDate</td>
+                                <td class="button-col-width">
+                                    <page-button path="Products/Detail" glyph="folder-open"
+                                                bootstrap-style="info" id="@item.ProductId">              
+                                    </page-button>
+                                    <page-button path="Products/Edit" glyph="pencil"
+                                                 bootstrap-style="success" id="@item.ProductId">
+                                    </page-button>
+                                    <page-button path="Products/Delete" glyph="remove"
+                                                 bootstrap-style="danger" id="@item.ProductId">
+                                    </page-button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3"></td>
+                            <td><strong>@Model.items.Sum(p => p.ProductInventory.Sum(pi => pi.Quantity))</strong></td>
+                            <td colspan="3"></td>
+                        </tr>
+                    </tfoot>
+                }
+            </table>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}
+
+
+

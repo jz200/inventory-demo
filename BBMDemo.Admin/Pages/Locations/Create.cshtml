@@ -1,0 +1,41 @@
+﻿@page
+@model CreateModel
+@inject SignInManager<User> SignInManager
+@{
+    ViewData["Title"] = "Create a new location";
+}
+
+@if  (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <h2>@ViewData["Title"]</h2>
+            <page-button path="Locations/Index" bootstrap-style="primary" glyph="info-sign"
+                        description="Back to List"></page-button>
+            <page-button path="Index" bootstrap-style="warning" glyph="list-alt"
+                        description="Dashboard"></page-button>
+            <p></p>
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Input.Name"></label>
+                    <input asp-for="Input.Name" class="form-control" />
+                    <span asp-validation-for="Input.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="hidden" value="@DateTime.Now" asp-for="Input.EnteredDate" />
+                </div>
+                <div class="form-group">
+                    <input type="hidden" value="@DateTime.Now" asp-for="Input.ModifiedDate" />
+                </div>                
+                <button type="submit" class="btn btn-success">Create</button>
+                
+            </form>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @await  Html.PartialAsync("_ValidationScriptsPartial")
+}
+

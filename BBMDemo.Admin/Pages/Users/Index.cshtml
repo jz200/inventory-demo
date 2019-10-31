@@ -1,0 +1,54 @@
+﻿@page
+@model IndexModel
+@inject  SignInManager<User> SignInManager
+@{
+    ViewData["Title"] = "Users";
+}
+@if  (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Users</h2>
+            <status-message message="@Model.StatusMessage"></status-message>
+            <page-button path="Users/Create" bootstrap-style="primary" 
+                description="Create New"></page-button>
+            <page-button path="Index" bootstrap-style="warning" 
+                glyph="list-alt"description="Dashboard"></page-button>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Admin</th>
+                        <th>Id</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(m => user.Email)</td>
+                            <td>@Html.DisplayFor(m => user.FirstName)</td>
+                            <td>@Html.DisplayFor(m => user.LastName)</td>
+                            <td>@Html.DisplayFor(m => user.IsAdmin)</td>
+                            <td>@Html.DisplayFor(m => user.Id)</td>
+                            <td class="button-col-width">
+                                <page-button path="Users/Edit" glyph="pencil"
+                                bootstrap-style="success" id-userId="@user.Id">
+                                </page-button>
+                                <page-button path="Users/Delete" glyph="remove"
+                                bootstrap-style="danger" id-userId="@user.Id">
+                                </page-button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+
+

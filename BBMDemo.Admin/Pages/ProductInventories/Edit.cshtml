@@ -1,0 +1,87 @@
+﻿@page
+@model EditModel
+@inject SignInManager<User> SignInManager
+
+@{
+    ViewData["Title"] = "Edit Inventory Entry";
+}
+
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h2>@ViewData["Title"]</h2>
+            <page-button path="ProductInventories/Index" bootstrap-style="primary" glyph="info-sign"
+                         description="Back to List"></page-button>
+            <page-button path="ProductInventories/Delete" bootstrap-style="danger" glyph="remove"
+                         description="Delete" id-productId="@Model.Input.ProductId"
+                         id-styleId="@Model.Input.StyleId" id-locationId="@Model.Input.LocationId"></page-button>
+            <page-button path="Index" bootstrap-style="warning" glyph="list-alt"
+                         description="Dashboard"></page-button>
+            <p></p>
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label class="control-label">Category</label>
+                    <select class="form-control" disabled>
+                        <option value="">@ViewBag.Category</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.ProductId" class="control-label"></label>
+                    <select class="form-control" disabled>
+                        <option value="@Model.Input.ProductId">@Model.Input.Product?.ItemNumber</option>
+                    </select>
+                    <input type="hidden" asp-for="Input.ProductId" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.StyleId" class="control-label"></label>
+                    <select class="form-control" disabled>
+                        <option value="@Model.Input.StyleId">@Model.Input.Style?.Name</option>
+                    </select>
+                    <input type="hidden" asp-for="Input.StyleId" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.LocationId" class="control-label"></label>
+                    <select class="form-control" disabled>
+                        <option value="@Model.Input.LocationId">@Model.Input.Location?.Name</option>
+                    </select>
+                    <input type="hidden" asp-for="Input.LocationId" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.EnteredDate" class="control-label"></label>
+                    <input class="form-control" value="@Model.Input.EnteredDate" disabled />
+                    <input type="hidden" asp-for="Input.EnteredDate" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.ModifiedDate" class="control-label"></label>
+                    <input class="form-control" value="@Model.Input.ModifiedDate" disabled />
+                    <input type="hidden" value="@DateTime.Now" asp-for="Input.ModifiedDate" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Quantity" class="control-label"></label>
+                    <input asp-for="Input.Quantity" class="form-control" />
+                    <span asp-validation-for="Input.Quantity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.FrameQuantity" class="control-label"></label>
+                    <input asp-for="Input.FrameQuantity" class="form-control" />
+                    <span asp-validation-for="Input.FrameQuantity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.BodyQuantity" class="control-label"></label>
+                    <input asp-for="Input.BodyQuantity" class="form-control" />
+                    <span asp-validation-for="Input.BodyQuantity" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-success">Save</button>
+
+            </form>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+

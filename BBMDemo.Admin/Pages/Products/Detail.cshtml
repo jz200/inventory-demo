@@ -1,0 +1,100 @@
+﻿@page
+@model DetailModel
+@inject SignInManager<User> SignInManager
+@{
+    ViewData["Title"] = "Product Detail";
+}
+
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <h2>@ViewData["Title"]</h2>
+            <page-button path="Products/Index" bootstrap-style="primary" glyph="info-sign"
+                         description="Back to List"></page-button>
+            <page-button path="Products/Edit" bootstrap-style="success" glyph="pencil"
+                         description="Edit" id="@Model.Input.ProductId"></page-button>
+            <page-button path="Products/Delete" bootstrap-style="danger" glyph="remove"
+                         description="Delete" id="@Model.Input.ProductId"></page-button>
+            <page-button path="Index" bootstrap-style="warning" glyph="list-alt"
+                         description="Dashboard"></page-button>
+            <p></p>
+            <dl class="dl-horizontal">
+                <dt>@Html.DisplayNameFor(m => m.Input.ItemNumber)</dt>
+                <dd>@Html.DisplayFor(m => m.Input.ItemNumber)</dd>
+                <dt>@Html.DisplayNameFor(m => m.Input.Category.Name)</dt>
+                <dd>@Html.DisplayFor(m => m.Input.Category.Name)</dd>
+                <dt>@Html.DisplayNameFor(m => m.Input.Notes)</dt>
+                <dd>@Html.DisplayFor(m => m.Input.Notes)</dd>
+                <dt># of Inventory Entries</dt>
+                <dd>
+                    @Model.Input.ProductInventory.Count
+                    &nbsp;&nbsp;
+                    @if (Model.Input.ProductInventory.Count > 0)
+                    {
+                        <a href="#inventory" id="detailLink" style="text-decoration: underline">Show Detail</a>
+                    }
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <div class="row" id="inventory" style="display:none">
+        <div class="col-md-8 col-md-offset-2">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Item Number</th>
+                        <th>Style</th>
+                        <th>Location</th>
+                        <th>Quantity</th>
+                        <th>Frame Quantity</th>
+                        <th>Body Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pi in Model.PInventoryList)
+                    {
+                        <tr>
+                            <td>@pi.Product.ItemNumber</td>
+                            <td>@pi.Style.Name</td>
+                            <td>@pi.Location.Name</td>
+                            <td>@pi.Quantity</td>
+                            <td>@pi.FrameQuantity</td>
+                            <td>@pi.BodyQuantity</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><strong>@Model.PInventoryList.Sum(pi => pi.Quantity)</strong></td>
+                        <td><strong>@Model.PInventoryList.Sum(pi => pi.FrameQuantity)</strong></td>
+                        <td><strong>@Model.PInventoryList.Sum(pi => pi.BodyQuantity)</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+}
+    
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#detailLink").click(function () {
+                var toggle_switch = $(this);
+                var content_selector = $(this).attr('href');
+                $(content_selector).toggle(function () {
+                    if ($(this).css('display') == 'none') {
+                        toggle_switch.html("Show Details");
+                    } else {
+                        toggle_switch.html("Hide Details");
+                    }
+                });
+            });
+        });
+    </script>
+}
+

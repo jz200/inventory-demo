@@ -1,0 +1,73 @@
+﻿@page
+@model DeleteModel
+@inject SignInManager<User> SignInManager
+@{
+    ViewData["Title"] = "Delete Inventory Entry";
+}
+
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <h2>@ViewData["Title"]</h2>
+            <page-button path="ProductInventories/Index" bootstrap-style="primary" glyph="info-sign"
+                         description="Back to List"></page-button>
+            <page-button path="ProductInventories/Edit" bootstrap-style="success" glyph="pencil"
+                         description="Edit" id-productId="@Model.Input.ProductId"
+                         id-styleId="@Model.Input.StyleId" id-locationId="@Model.Input.LocationId"></page-button>
+            <page-button path="Index" bootstrap-style="warning" glyph="list-alt"
+                         description="Dashboard"></page-button>
+            <p></p>
+            <dl class="dl-horizontal">
+                <dt>@Html.DisplayNameFor(m => m.Input.Product.ItemNumber)</dt>
+                <dd>@Html.DisplayFor(m => m.Input.Product.ItemNumber)</dd>
+                <dt>@Html.DisplayNameFor(m => m.Input.Style.Name)</dt>
+                <dd>@Html.DisplayFor(m => m.Input.Style.Name)</dd>
+                <dt>@Html.DisplayNameFor(m => m.Input.Location.Name)</dt>
+                <dd>@Html.DisplayFor(m => m.Input.Location.Name)</dd>
+                <dt>@Html.DisplayNameFor(m => m.Input.Quantity)</dt>
+                <dd>@Html.DisplayFor(m => m.Input.Quantity)</dd>
+                <dt>@Html.DisplayNameFor(m => m.Input.FrameQuantity)</dt>
+                <dd>@Html.DisplayFor(m => m.Input.FrameQuantity)</dd>
+                <dt>@Html.DisplayNameFor(m => m.Input.BodyQuantity)</dt>
+                <dd>@Html.DisplayFor(m => m.Input.BodyQuantity)</dd>
+            </dl>
+            <form method="post" id="form">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <input type="hidden" asp-for="Input.ProductId" />
+                <input type="hidden" asp-for="Input.StyleId" />
+                <input type="hidden" asp-for="Input.LocationId" />
+                <button type="button" class="btn btn-danger" 
+                data-toggle="modal" data-target="#confirm-submit">Delete</button>
+            </form>
+        </div>
+    </div>
+
+    <!--Confirmation modal-->
+    <div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="text-danger">Please Confirm</h4>
+                </div>
+                <div class="modal-body">
+                    <span class="glyphicon glyphicon-alert text-danger"></span>
+                    &nbsp;&nbsp;
+                    <span class="text-danger">
+                        Are you sure you want to delete inventory entry for <strong>@Model.Input.Product?.ItemNumber</strong>
+                        of style <strong>@Model.Input.Style?.Name</strong> at <strong>@Model.Input.Location?.Name</strong>?
+                    </span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger confirm">Yes!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @await Html.PartialAsync("_ConfirmModalScriptsPartial")
+}
+

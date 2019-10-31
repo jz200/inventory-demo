@@ -1,0 +1,116 @@
+﻿@page
+@model CreateModel
+@inject SignInManager<User> SignInManager
+@inject IDbReadService DbReadService
+
+@{
+    ViewData["Title"] = "Create a new inventory entry";
+}
+
+@if  (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h2>@ViewData["Title"]</h2>
+            <page-button path="ProductInventories/Index" bootstrap-style="primary" glyph="info-sign"
+                        description="Back to List"></page-button>
+            <page-button path="Index" bootstrap-style="warning" glyph="list-alt"
+                        description="Dashboard"></page-button>
+            <p></p>
+            <form method="post">
+                @if (ModelState.ContainsKey("DuplicateKey"))
+                {
+                    <div class="text-danger">
+                    @Html.Raw(Model.ErrorMsg)             
+                    </div>
+                    <p></p>
+                    //This would work too
+                    //@Model.MsgInHtmlString
+                }
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="control-label"></label>
+                    <select id="CategoryList" asp-for="CategoryId" asp-items="ViewBag.Categories"
+                            class="form-control">
+                        <option value="-1">Select</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.ProductId" class="control-label"></label>
+                    <span class="text-info">(You can select a category to narror down item lists)</span>
+                    <select id="ProductList" asp-for="Input.ProductId" asp-items="ViewBag.Products"
+                            class="form-control">
+                        <option value="">Select</option>
+                    </select>
+                    <span asp-validation-for="Input.ProductId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.StyleId" class="control-label"></label>
+                    <select asp-for="Input.StyleId" asp-items="ViewBag.Styles"
+                            class="form-control">
+                        <option value="">Select</option>
+                    </select>
+                    <span asp-validation-for="Input.StyleId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.LocationId" class="control-label"></label>
+                    <select asp-for="Input.LocationId" asp-items="ViewBag.Locations"
+                            class="form-control">
+                        <option value="">Select</option>
+                    </select>
+                    <span asp-validation-for="Input.LocationId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Quantity" class="control-label"></label>
+                    <input asp-for="Input.Quantity" class="form-control" />
+                    <span asp-validation-for="Input.Quantity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.FrameQuantity" class="control-label"></label>
+                    <input asp-for="Input.FrameQuantity" class="form-control" />
+                    <span asp-validation-for="Input.FrameQuantity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.BodyQuantity" class="control-label"></label>
+                    <input asp-for="Input.BodyQuantity" class="form-control" />
+                    <span asp-validation-for="Input.BodyQuantity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="hidden" value="@DateTime.Now" asp-for="Input.EnteredDate" />
+                </div>
+                <div class="form-group">
+                    <input type="hidden" value="@DateTime.Now" asp-for="Input.ModifiedDate" />
+                </div>
+                <button type="submit" class="btn btn-success">Create</button>
+
+            </form>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @await  Html.PartialAsync("_ValidationScriptsPartial")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var productDDL = $('#ProductList');
+
+            $("#CategoryList").change(function () {
+                $.ajax({
+                    url: "/Common/Products",
+                    method: 'post',
+                    data: { catId: $(this).val() },
+                    dataType: 'json',
+                    success: function (data) {
+                        productDDL.empty();
+                        productDDL.append($('<option/>', { value: '', text: 'Select' }));
+                        $(data).each(function (index, item) {
+                            productDDL.append($('<option/>', { value: item.productId, text: item.itemNumber }));
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
+

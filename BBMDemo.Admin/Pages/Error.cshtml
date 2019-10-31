@@ -1,0 +1,24 @@
+﻿@page "{statusCode:int?}"
+@model ErrorModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<h2 class="text-danger">An error occurred while processing your request.</h2>
+@if (ViewBag.ErrorMessage.Length > 0)
+{
+    <p>
+        @ViewBag.ErrorMessage. Please contact site administrator.
+    </p>
+}
+
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    </p>
+}
+
+<h2>Exception Detail</h2>
+<p>Exceptio Path : @ViewBag.ExceptionPath</p>
+<p>Exception Message: @ViewBag.ExceptionMessage</p>
