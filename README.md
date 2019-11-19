@@ -95,9 +95,9 @@ data.
 * Run UI application. In visual studio, right click UI project and
 click View in Browser. You can access the site for
 regular user at [https://localhost:44312](https://localhost:44312).
-* Run admin application. n visual studio, right click admin project and
+* Run admin application. In visual studio, right click admin project and
 click View in Browser. You can access the site for
-regular user at [https://localhost:44377](https://localhost:44377).
+admin user at [https://localhost:44377](https://localhost:44377).
 
 
 
