@@ -107,7 +107,6 @@ Go to [https://dotnet.microsoft.com/download/dotnet-core/2.0](https://dotnet.mic
 pick the correct installer.
 * In Visual Studio, right click UI project and click Publish. Choose
 FolderProfile and Target Location to store published files.  
-The default location is `bin\Debug\netcoreapp2.0\publish\`.
 * In IIS, create a new website and set the physical path to 
 the publish folder you choose in the previous step.  Also pick
 a port other than default port of 80 for the new site.
