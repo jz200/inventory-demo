@@ -92,12 +92,40 @@ Execute the queries on SSMS to add necessary test
 data.
 
 ### Run Applications
-* Run UI application. In visual studio, right click UI project and
+* Run UI application. In Visual Studio, right click UI project and
 click View in Browser. You can access the site for
 regular user at [https://localhost:44312](https://localhost:44312).
-* Run admin application. In visual studio, right click admin project and
+* Run admin application. In Visual Studio, right click admin project and
 click View in Browser. You can access the site for
 admin user at [https://localhost:44377](https://localhost:44377).
+
+### Deploy ASP.NET Core 2.0 Apps to IIS
+* Install the .NET Core Hosting Bundle which includes the .NET Core Runtime, 
+.NET Core Library, and the ASP.NET Core Module. 
+The module allows ASP.NET Core apps to run behind IIS. 
+Go to [https://dotnet.microsoft.com/download/dotnet-core/2.0](https://dotnet.microsoft.com/download/dotnet-core/2.0) to 
+pick the correct installer.
+* In Visual Studio, right click UI project and click Publish. Choose
+FolderProfile and Target Location to store published files.  
+The default location is `bin\Debug\netcoreapp2.0\publish\`.
+* In IIS, create a new website and set the physical path to 
+the publish folder you choose in the previous step.  Also pick
+a port other than default port of 80 for the new site.
+* In IIS, find the application pool assigned for the site. 
+Right click it and click Basic Settings. Choose `No Managed Code`
+for .NET CLR Version drop down.
+* Remember to grant at least `Read and Execute` permission to user 
+`IIS AppPool\<AppPoolName>` for the publish folder. You need to substitute placeholder 
+`<AppPoolName>` with Application pool assigned for the site.
+* You need to create a new login for user `IIS AppPool\<AppPoolName>`
+in SQL server.
+* In IIS, right click the site you just created and choose 
+Manage Website -> Browse. Now IIS acts as the reverse proxy server
+that forwards HTTP requests to internal Kestrel server which further pushes
+them into ASP.NET Core middleware pipeline.
+* Repeat the above steps for admin project to deploy
+the admin site to IIS.
+
 
 
 
